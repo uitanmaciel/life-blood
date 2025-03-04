@@ -1,0 +1,38 @@
+name: Build Pipeline Template
+
+on:
+  workflow_call:
+    inputs:
+      dotnet-version:
+        required: false
+        default: '9.x'
+        type: string
+      project-path:
+        required: true        
+        type: string
+
+jobs:
+  build:    
+    runs-on: ubuntu-latest    
+    env:
+      PROJECT_PATH: ${{ inputs.project-path }}
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: Restore dependencies
+        run: dotnet restore $PROJECT_PATH
+
+      - name: Build Application
+        run: dotnet build $PROJECT_PATH --no-restore --configuration Release

@@ -1,0 +1,37 @@
+name: CI Donor (Develop Environment)
+
+on:
+  pull_request:
+    branches: [develop/ms-donor]
+    
+jobs:
+  versioning:
+    uses: ./.github/workflows/template-versioning.yml
+    with:
+      version-file: './microservices/ms-donor/version.txt'
+      project-path: './microservices/ms-donor'
+  
+  build:
+    needs: versioning
+    uses: ./.github/workflows/template-build.yml
+    with:      
+      project-path: './microservices/ms-donor/adapters/Donor.Api/Donor.Api.csproj'
+      
+  test:
+    needs: versioning
+    uses: ./.github/workflows/template-test.yml
+    with:     
+      project-path: './microservices/ms-donor/tests/DonorTests/DonorTests.csproj'
+  
+  dependency-check:
+    needs: versioning
+    uses: ./.github/workflows/template-dependency-check.yml
+    with:
+      project-path: './microservices/ms-donor/adapters/Donor.Api/Donor.Api.csproj'
+      
+  security-check:
+    needs: versioning
+    uses: ./.github/workflows/template-code-security-check.yml
+    with:
+      project-path: './microservices/ms-donor/*'
+    

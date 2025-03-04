@@ -1,0 +1,15 @@
+name: Donor CD Pipeline - Development
+
+on:
+  push:
+    branches: [ develop/ms-donor ]
+    
+jobs:
+    docker:
+        uses: ./.github/workflows/template-docker-push.yml
+        with:
+          service-name: "donor-service-dev"
+          docker-file-path: "./microservices/ms-donor/Dockerfile"
+        secrets:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

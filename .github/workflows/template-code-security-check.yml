@@ -1,0 +1,36 @@
+name: Code Security Check Template
+
+on:
+  workflow_call:
+    inputs:
+      project-path:
+        required: true
+        type: string
+        
+permissions:
+  security-events: write
+  packages: read
+  actions: read
+  contents: read
+  
+jobs:
+  code-security-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.project-path }}
+        
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: "/languages/csharp"

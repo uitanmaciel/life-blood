@@ -1,0 +1,27 @@
+name: Donor CD Pipeline - Production
+
+on:
+  pull_request:
+    branches: [ main ]
+    
+jobs:
+  terraform:  
+    uses: ./.github/workflows/template-terraform.yml       
+    
+  docker:
+    needs: terraform
+    uses: ./.github/workflows/template-docker-push.yml
+    with:
+     service-name: "donor-service-prd"
+     docker-file-path: "./microservices/ms-donor/Dockerfile"
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        
+  deploy:
+    needs: docker
+    uses: ./.github/workflows/template-deploy-azure.yml
+    secrets:
+      service-name: "donor-service-prd"
+      docker-image-tag: "docker.io/${{ secrets.DOCKER_USERNAME }}/donor-service-prd:latest"
+      k8s-manifest-path: "./k8s/azure/ms-donor-prd.yaml"
