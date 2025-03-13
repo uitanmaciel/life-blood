@@ -1,4 +1,4 @@
-name: Donor CD Pipeline - Development
+name: Donor CD Pipeline (Develop Environment)
 
 on:
   push:

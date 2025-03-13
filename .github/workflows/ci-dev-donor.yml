@@ -2,7 +2,7 @@ name: CI Donor (Develop Environment)
 
 on:
   pull_request:
-    branches: [develop/ms-donor]
+    branches: [develop/ms-donor/feature]
     
 jobs:
   versioning:
